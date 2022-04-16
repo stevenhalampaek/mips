@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Simulating RAM Initialization"
+iverilog -g2005-sv -o ram tb/tb_ram.v rtl/ram.v
+vvp ram
+open -a gtkwave ram_wave.vcd

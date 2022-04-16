@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Simulating RAM Initialization"
+iverilog -g2005-sv -o mips tb/tb_mips.sv 
+vvp mips
