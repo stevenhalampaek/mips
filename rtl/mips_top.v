@@ -3,7 +3,15 @@
  * Description:
  ****************************************/
 
- module mips_top ( input clk, input rst);
+ module mips_top (  /* Clock/Reset */
+                    input clk, 
+                    input rst,
+                    /* Inputs */
+                    input port_sel,
+                    input port_en,
+                    input [7:0] switches,
+                    /* Outputs */
+                    output [15:0] leds);
 
     /* Internal Signals */
     wire [31:0] inst_opcode;
