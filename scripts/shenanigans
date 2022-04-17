@@ -1,0 +1,12 @@
+#!/bin/bash
+
+assert i_top_level.i_mips_datapath.i_memory.memory[addr] == KNOWN ANSWER
+
+
+
+echo "########"
+echo "......#."
+echo ".....#.."
+echo "....#..."
+echo "...#...."
+echo "..#....."
