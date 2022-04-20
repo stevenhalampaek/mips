@@ -49,39 +49,61 @@ module register_file(   input           clk,
 
     /* Register Array */
     reg [31:0] registers [0:31];
+    reg [31:0] debug_r17;
+    reg [31:0] debug_r18;
+    reg [31:0] debug_r19;
+    reg [31:0] debug_r20;
+    reg [31:0] debug_r21;
+    reg [31:0] debug_r22;
+    reg [31:0] debug_r23;
+
     integer i;
     always @(posedge clk)
     begin
         if (rst == 1) begin
+            debug_r17 = 32'b0;            
+            debug_r18 = 32'b0;
+            debug_r19 = 32'b0;
+            debug_r20 = 32'b0;
+            debug_r21 = 32'b0;
+            debug_r22 = 32'b0;
+            debug_r23 = 32'b0;
             /* Clear all registers */
             for (i = 0; i < 32; i = i + 1)
-                registers[i] <= 32'b0;
+                registers[i] = 32'b0;
         end else begin /* End of rst */
 
             /* Jump And Link Reg 31 */
             if (JumpAndLink)
-                registers[31] <= jal_addr;
+                registers[31] = jal_addr;
 
             /* Write Port 0 */
             if (wr_en) begin
                 if (wr_addr == 5'b0) begin
-                    registers[0] <= 32'b0;
+                    registers[0] = 32'b0;
                 end else begin /* End of addr 0 */
-                    registers[wr_addr] <= wr_data;
+                    registers[wr_addr] = wr_data;
                 end /* End of other addr */
             end /* End of write */
 
             /* Read Port 0 */
             if (rd_addr0 == 5'b0)
-                rd_data0 <= 32'b0;
+                rd_data0 = 32'b0;
             else
-                rd_data0 <= registers[rd_addr0];
+                rd_data0 = registers[rd_addr0];
 
             /* Read Port 1 */
             if (rd_addr1 == 5'b0)
-                rd_data1 <= 32'b0;
+                rd_data1 = 32'b0;
             else
-                rd_data1 <= registers[rd_addr1];
+                rd_data1 = registers[rd_addr1];
+            debug_r17 = registers[17];            
+            debug_r18 = registers[18];
+            debug_r19 = registers[19];
+            debug_r20 = registers[20];
+            debug_r21 = registers[21];
+            debug_r22 = registers[22];
+            debug_r23 = registers[23];
 
         end /* End of else */
     end /* End posedge clk */

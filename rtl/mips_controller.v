@@ -59,7 +59,7 @@ module mips_controller( input clk,
 
     /* State Signals */
     reg [4:0] state;
-
+    reg [4:0] debug_state;
     always @(posedge clk)
     begin
         /* Reset All Outputs */
@@ -81,7 +81,7 @@ module mips_controller( input clk,
             RegWrite    = 0;
             RegDst      = 0;
         end else begin /* End of if rst */
-
+            debug_state <= state;
             /* Initialize Outputs Before Assignment */
             PCWriteCond = 0;
             JumpAndLink = 0;
@@ -198,6 +198,7 @@ module mips_controller( input clk,
                         ALUSrcB     = 0;
                         ALUOp       = opcode[31:26];
                         MemToReg    = 0;
+                        RegDst      = 1; // SHP Debug - check if regdst 1 cycle earlier fixes wrong reg write
                         state       = R_TYPE_1;
                     end
 
@@ -208,7 +209,7 @@ module mips_controller( input clk,
                         ALUOp       = opcode[31:26];
                         MemToReg    = 0;
                         RegDst      = 1;
-                        RegWrite    = 0;
+                        RegWrite    = 1; // SHP Debug checking if this works for all cycles
                         state       = R_TYPE_2;
                     end
 
@@ -276,6 +277,7 @@ module mips_controller( input clk,
                         ALUSrcB     = 2'b10;
                         MemRead     = 1;
                         IorD        = 1;
+                        ALUOp       = 6'b001001; // SHP Debug to get correct data value from memory
                         state       = LOAD_2;
                     end
 
@@ -283,8 +285,8 @@ module mips_controller( input clk,
                     begin
                         RegDst      = 0;
                         MemToReg    = 1;
-                        RegWrite    = 1; //SHP testing if extending regwrite fixes write miss
-                        //IorD        = 1;
+                        RegWrite    = 0; //SHP testing if 0 fixes it
+                        IorD        = 1; // Adding this back
                         if (opcode[15:0] == 16'hFFF8) begin
                             RegWrite    = 1;
                             state       = LOAD_PORT_0;
@@ -308,7 +310,7 @@ module mips_controller( input clk,
                     begin
                         RegDst      = 0;
                         MemToReg    = 1;
-                        RegWrite    = 0;
+                        RegWrite    = 1; // SHP debug checking extend at end
                         IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
@@ -393,6 +395,7 @@ module mips_controller( input clk,
             endcase /* End case states */
 
         end /* End of if rst else */
+//        debug_state = state;
     end /* End of posedge clk */
 
 endmodule

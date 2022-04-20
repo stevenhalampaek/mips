@@ -39,7 +39,7 @@ module tb_mips;
 
     /* Testbench Duration */
     initial
-    #1000 $finish;
+    #1500 $finish;
 
     /* Dump Waveform */
     initial begin

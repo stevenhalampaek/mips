@@ -4,6 +4,7 @@
  ************************************************************/
 
 module ram( input           clk,
+            input           rst,
             input [7:0]     addr,
             input [31:0]    data,
             input           wr_en,
@@ -15,7 +16,9 @@ module ram( input           clk,
 
     always @(posedge clk)
     begin
-        if (wr_en)
+        if (rst)
+            tmp = 0;
+        else if (wr_en)
             mem[addr] <= data;
         else
             tmp <= mem[addr];

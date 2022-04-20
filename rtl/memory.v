@@ -32,6 +32,7 @@ module memory(  input           clk,
 
     /* Instruction/Data RAM */
     ram inst_data_ram ( .clk(clk),
+                        .rst(rst),
                         .addr(addr[9:2]),
                         .data(WrData),
                         .wr_en(wr_en),
