@@ -6,20 +6,21 @@
 module mips_controller( input clk,
                         input rst,
                         input [31:0]    opcode,
-                        output          PCWriteCond,
-                        output          PCWrite,
-                        output          IorD,
-                        output          MemRead,
-                        output          MemWrite,
-                        output          IRWrite,
-                        output          isSigned,
-                        output [1:0]    PCSource,
-                        output [5:0]    ALUOp,
-                        output          ALUSrcA,
-                        output [1:0]    ALUSrcB,
-                        output          RegWrite,
-                        output          RegDst,
-                        output          JumpAndLink);
+                        output reg          PCWriteCond,
+                        output reg          PCWrite,
+                        output reg          IorD,
+                        output reg          MemRead,
+                        output reg          MemWrite,
+                        output reg          MemToReg,
+                        output reg          IRWrite,
+                        output reg          isSigned,
+                        output reg [1:0]    PCSource,
+                        output reg [5:0]    ALUOp,
+                        output reg          ALUSrcA,
+                        output reg [1:0]    ALUSrcB,
+                        output reg          RegWrite,
+                        output reg          RegDst,
+                        output reg          JumpAndLink);
 
     /* Controller States */
     localparam
@@ -99,11 +100,10 @@ module mips_controller( input clk,
             RegDst      = 0;
 
             case (state)
-            begin
-
                 INIT:
                     begin
                         state   = INSTRUCTION_FETCH;
+                        IRWrite = 1;
                     end
 
                 INSTRUCTION_FETCH:
@@ -122,7 +122,6 @@ module mips_controller( input clk,
                         ALUSrcB = 2'b11;
                         ALUOp   = 6'b001001;
                         case (opcode[31:26])
-                        begin
                             6'b000000:
                                 state   = R_TYPE_0;
                             6'b000010:
@@ -167,11 +166,13 @@ module mips_controller( input clk,
                     begin
                         PCWrite     = 1;
                         PCSource    = 2'b10;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
                 JR_STATE:
                     begin
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
@@ -187,6 +188,7 @@ module mips_controller( input clk,
                     begin
                         PCWrite     = 1;
                         PCSource    = 2'b10;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
@@ -218,6 +220,7 @@ module mips_controller( input clk,
                         MemToReg    = 0;
                         RegDst      = 1;
                         RegWrite    = 1;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                         if (opcode[5:0] == 6'b001000) begin
                             PCWrite = 1;
@@ -255,6 +258,7 @@ module mips_controller( input clk,
                     begin
                         RegDst      = 0;
                         RegWrite    = 1;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
@@ -279,8 +283,8 @@ module mips_controller( input clk,
                     begin
                         RegDst      = 0;
                         MemToReg    = 1;
-                        RegWrite    = 0;
-                        IorD        = 1;
+                        RegWrite    = 1; //SHP testing if extending regwrite fixes write miss
+                        //IorD        = 1;
                         if (opcode[15:0] == 16'hFFF8) begin
                             RegWrite    = 1;
                             state       = LOAD_PORT_0;
@@ -305,6 +309,7 @@ module mips_controller( input clk,
                         RegDst      = 0;
                         MemToReg    = 1;
                         RegWrite    = 0;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
@@ -315,7 +320,8 @@ module mips_controller( input clk,
 
                 LOAD_PORT_1:
                     begin
-                        state       = INSTRUCTION_FETCH'
+                        IRWrite     = 1;
+                        state       = INSTRUCTION_FETCH;
                     end
 
                 STORE_0:
@@ -337,6 +343,7 @@ module mips_controller( input clk,
                     begin
                         MemWrite    = 0;
                         IorD        = 0;
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 
@@ -367,6 +374,7 @@ module mips_controller( input clk,
 
                 BRANCH_2:
                     begin
+                        IRWrite     = 1;
                         state       = INSTRUCTION_FETCH;
                     end
 

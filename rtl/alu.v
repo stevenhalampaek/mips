@@ -7,9 +7,9 @@ module alu( input [31:0]        in0,
             input [31:0]        in1,
             input [4:0]         shift,
             input [4:0]         op,
-            output          bt,
-            output [31:0]   result,
-            output [31:0]   result_high);
+            output          bt_out,
+            output [31:0]   result_out,
+            output [31:0]   result_out_high);
 
     /* ALU Operations */
     localparam
@@ -41,8 +41,15 @@ module alu( input [31:0]        in0,
 
     reg [63:0] tmp_unsigned;
     reg signed [63:0] tmp_signed;
+    reg [31:0] result;
+    reg [31:0] result_high;
+    reg bt;
 
-    always @ (*) begin
+    assign bt_out = bt;
+    assign result_out = result;
+    assign result_out_high = result_high;
+
+    always @ (in0 or in1 or shift or op) begin
 
         /* Initialize */
         tmp_unsigned    = 0;
@@ -91,7 +98,7 @@ module alu( input [31:0]        in0,
 
             SRA:
                 begin
-                    result in1 >>> shift;
+                    result = in1 >>> shift;
                 end
 
             SLT:
@@ -149,30 +156,6 @@ module alu( input [31:0]        in0,
             SLL:
                 begin
                     result = in1 << shift;
-                end
-
-            JA: /* Do nothing */
-                begin
-                end
-
-            JAL: /* Do nothing */
-                begin
-                end
-
-            JR: /* Do nothing */
-                begin
-                end
-
-            MFHI: /* Do nothing */
-                begin
-                end
-
-            MFLO: /* Do nothing */
-                begin
-                end
-
-            SLTU: /* Do nothing */
-                begin
                 end
 
             SW:

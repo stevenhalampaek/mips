@@ -33,6 +33,8 @@
     wire [31:0] outport;
     wire        port_rst;
 
+    assign leds = 16'hABCD;
+
     /* Instantiate Sub Blocks */
     mips_controller i_mips_controller ( .clk(clk), 
                                         .rst(rst),
@@ -65,7 +67,7 @@
                                     .IRWrite(IRWrite),
                                     .JumpAndLink(JumpAndLink),
                                     .isSigned(isSigned),
-                                    .PCSource(PCSource),
+                                    .PCSrc(PCSource),
                                     .ALUOp(ALUOp),
                                     .ALUSrcA(ALUSrcA),
                                     .ALUSrcB(ALUSrcB),

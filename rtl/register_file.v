@@ -49,10 +49,10 @@ module register_file(   input           clk,
 
     /* Register Array */
     reg [31:0] registers [0:31];
-
+    integer i;
     always @(posedge clk)
     begin
-        if (rst = 1) begin
+        if (rst == 1) begin
             /* Clear all registers */
             for (i = 0; i < 32; i = i + 1)
                 registers[i] <= 32'b0;

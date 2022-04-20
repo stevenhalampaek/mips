@@ -6,15 +6,17 @@
 module memory_controller(   input [31:0]    addr,
                             input           MemRead,
                             input           MemWrite,
-                            output          wr_en,
-                            output          out_en,
-                            output [1:0]    mux_sel);
+                            output reg         wr_en,
+                            output reg         out_en,
+                            output reg [1:0]    mux_sel);
 
     /* Memory I/O Addresses */
     localparam
         USER_PORT_0 = 32'h0000FFF8,
         USER_PORT_1 = 32'h0000FFFC,
         USER_PORT_2 = 32'h0000FFFC;
+
+//    assign mux_sel = (MemRead) ? () : 2'b00;
 
     /* */
     always @(*)

@@ -11,9 +11,9 @@ module register(    input               clk,
 
     always @(posedge clk)
     begin
-        if (rst) begin
+        if (rst)
             out = 0;
-        end else begin
+        else begin
             if (en)
                 out = in;
         end

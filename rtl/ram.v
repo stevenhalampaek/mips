@@ -5,24 +5,23 @@
 
 module ram( input           clk,
             input [7:0]     addr,
-            inout [31:0]    data,
-            input           cs,
-            input           we,
-            input           oe);
+            input [31:0]    data,
+            input           wr_en,
+            output [31:0]   q);
 
     /* RAM */
-    reg [31:0] mem [0:20];
+    reg [31:0] mem [0:255];
     reg [31:0] tmp;
 
     always @(posedge clk)
     begin
-        if (cs & we)
+        if (wr_en)
             mem[addr] <= data;
-        else if (cs & !we)
+        else
             tmp <= mem[addr];
     end
 
-    assign data = (cs & oe & !we) ? tmp : 'hz;
+    assign q = tmp;
 
     initial
     begin

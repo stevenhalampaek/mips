@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Clean old run
+echo "Cleaning Previous Run ..."
+rm mips*
+echo "Done."
+
+# Compile Design
+echo "Compiling MIPS Design ..."
+iverilog -o mips \
+    tb/tb_mips.v \
+    rtl/alu.v \
+    rtl/alu_controller.v \
+    rtl/memory.v \
+    rtl/memory_controller.v \
+    rtl/mips_controller.v \
+    rtl/mips_datapath.v \
+    rtl/mips_top.v \
+    rtl/ram.v \
+    rtl/register.v \
+    rtl/register_file.v
+echo "Done."
+
+# Run Design
+echo "Running Design/Testbench ..."
+vvp mips
+echo "Done."
+
+# Open Waveform
+echo "Opening VCD for Debug"
+open -a gtkwave mips_wave.vcd
+echo "Goodbye."

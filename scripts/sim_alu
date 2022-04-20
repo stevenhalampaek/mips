@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "Simulating ALU for Add Commands"
-iverilog -o alu tb/tb_alu.v rtl/alu.v
-vvp alu
-open -a gtkwave alu_wave.vcd
